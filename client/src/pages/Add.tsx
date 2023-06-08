@@ -1,21 +1,26 @@
 import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDebouncedCallback } from "../../hooks/use-debounce";
+
 
 const Add = () => {
   const [book, setBook] = useState({
     title: "",
     desc: "",
-    price: null,
+    price: 0,
     cover: "",
   });
   const [error, setError] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setBook((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  const debounced = useDebouncedCallback(
+    (value) => {
+      setBook(value);
+    },
+    500
+  );
 
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -28,6 +33,8 @@ const Add = () => {
     }
   };
 
+  console.log(book);
+
   return (
     <div className="form">
       <h1>Add New Book</h1>
@@ -35,25 +42,25 @@ const Add = () => {
         type="text"
         placeholder="Book title"
         name="title"
-        onChange={handleChange}
+        onChange={(e) => debounced(e.target.value)}
       />
       <textarea
         rows={5}
         placeholder="Book desc"
         name="desc"
-        onChange={handleChange}
+        onChange={(e) => debounced(e.target.value)}
       />
       <input
         type="number"
         placeholder="Book price"
         name="price"
-        onChange={handleChange}
+        onChange={(e) => debounced(e.target.value)}
       />
       <input
         type="text"
         placeholder="Book cover"
         name="cover"
-        onChange={handleChange}
+        onChange={(e) => debounced(e.target.value)}
       />
       <button onClick={handleClick}>Add</button>
       {error && "Something went wrong!"}

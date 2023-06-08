@@ -1,24 +1,26 @@
 import express from "express";
 import mysql from "mysql";
 import cors from "cors";
+import 'dotenv/config';
 
 const app = express();
+const PORT = process.env.PORT || 8080
 
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "DeaawxzMv6",
-  database: "blog",
+  host: process.env.host,
+  user: process.env.user,
+  password: process.env.password,
+  database: process.env.database,
 });
 
 app.use(express.json())
 app.use(cors())
 
-app.get("/", (req, res) => {
-  res.json("hello this is the backend");
+app.get("/", (_, res) => {
+  res.json("Hello, this is the backend");
 });
 
-app.get("/books", (req, res) => {
+app.get("/books", (_, res) => {
   const q = "SELECT * FROM books";
 
   db.query(q, (err, data) => {
@@ -36,7 +38,7 @@ app.post("/books", (req, res) => {
     req.body.cover,
   ];
 
-  db.query(q, [values], (err, data) => {
+  db.query(q, [values], (err, _) => {
     if (err) return res.json(err);
     return res.json("Book has been created successfully.");
   });
@@ -46,7 +48,7 @@ app.delete("/books/:id", (req, res) => {
   const bookId = req.params.id;
   const q = "DELETE FROM books WHERE id = ?";
 
-  db.query(q, [bookId], (err, data) => {
+  db.query(q, [bookId], (err, _) => {
     if (err) return res.json(err);
     return res.json("Book has been deleted successfully.");
   });
@@ -62,12 +64,12 @@ app.put("/books/:id", (req, res) => {
     req.body.cover,
   ];
 
-  db.query(q, [...values, bookId], (err, data) => {
+  db.query(q, [...values, bookId], (err, _) => {
     if (err) return res.json(err);
     return res.json("Book has been updated successfully.");
   });
 })
 
-app.listen(8080, () => {
+app.listen(PORT, () => {
   console.log("Connected to backend!");
 });
