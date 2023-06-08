@@ -1,24 +1,27 @@
 import axios from "axios";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useDebouncedCallback } from "../../hooks/use-debounce";
 
 const Update = () => {
+  const { state } = useLocation();
   const [book, setBook] = useState({
-    title: "",
-    desc: "",
-    price: null,
-    cover: "",
+    title: state.title,
+    desc: state.desc,
+    price: state.price,
+    cover: state.cover,
   });
   const [error, setError] = useState(false);
-
-  const location = useLocation();
   const navigate = useNavigate();
 
-  const bookId = location.pathname.split("/")[2];
+  const bookId = state.id
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setBook((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  const debounced = useDebouncedCallback(
+    (e) => {
+      setBook((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    },
+    500
+  );
 
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -37,27 +40,27 @@ const Update = () => {
       <h1>Update the Book</h1>
       <input
         type="text"
-        placeholder="Book title"
+        defaultValue={state.title}
         name="title"
-        onChange={handleChange}
+        onChange={(e) => debounced(e)}
       />
       <textarea
         rows={5}
-        placeholder="Book desc"
+        defaultValue={state.desc}
         name="desc"
-        onChange={handleChange}
+        onChange={(e) => debounced(e)}
       />
       <input
         type="number"
-        placeholder="Book price"
+        defaultValue={state.price}
         name="price"
-        onChange={handleChange}
+        onChange={(e) => debounced(e)}
       />
       <input
         type="text"
-        placeholder="Book cover"
+        defaultValue={state.cover}
         name="cover"
-        onChange={handleChange}
+        onChange={(e) => debounced(e)}
       />
       <button onClick={handleClick}>Update</button>
       {error && "Something went wrong!"}

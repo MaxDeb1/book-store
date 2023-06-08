@@ -18,8 +18,6 @@ const Books = () => {
     fetchAllBooks();
   }, []);
 
-  console.log(books);
-
   const handleDelete = async (id: number) => {
     try {
       await axios.delete(`http://localhost:8080/books/${id}`);
@@ -44,7 +42,8 @@ const Books = () => {
             </button>
             <button className="update">
               <Link
-                to={`/update/${book.id}`}
+                to={ `/update/${book.id}`}
+                state= {book}
                 style={{ color: "inherit", textDecoration: "none" }}
               >
                 Update

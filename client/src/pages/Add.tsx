@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDebouncedCallback } from "../../hooks/use-debounce";
 
-
 const Add = () => {
   const [book, setBook] = useState({
     title: "",
@@ -16,8 +15,8 @@ const Add = () => {
   const navigate = useNavigate();
 
   const debounced = useDebouncedCallback(
-    (value) => {
-      setBook(value);
+    (e) => {
+      setBook((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     },
     500
   );
@@ -33,8 +32,6 @@ const Add = () => {
     }
   };
 
-  console.log(book);
-
   return (
     <div className="form">
       <h1>Add New Book</h1>
@@ -42,25 +39,25 @@ const Add = () => {
         type="text"
         placeholder="Book title"
         name="title"
-        onChange={(e) => debounced(e.target.value)}
+        onChange={(e) => debounced(e)}
       />
       <textarea
         rows={5}
         placeholder="Book desc"
         name="desc"
-        onChange={(e) => debounced(e.target.value)}
+        onChange={(e) => debounced(e)}
       />
       <input
         type="number"
         placeholder="Book price"
         name="price"
-        onChange={(e) => debounced(e.target.value)}
+        onChange={(e) => debounced(e)}
       />
       <input
         type="text"
         placeholder="Book cover"
         name="cover"
-        onChange={(e) => debounced(e.target.value)}
+        onChange={(e) => debounced(e)}
       />
       <button onClick={handleClick}>Add</button>
       {error && "Something went wrong!"}
